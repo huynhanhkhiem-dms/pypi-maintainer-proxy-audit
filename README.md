@@ -18,12 +18,21 @@ The distributed tables use reviewer-facing pseudonymous project, account and met
 
 ```text
 code/
+  prepare_data.py
   decision_impact.py
   tiebreak_sensitivity.py
   reproduce.py
   derive_account_flags.py
 data/
-  *.csv.gz
+  account_flags.csv.gz
+  download_ranks.csv.gz
+  hist_metadata_proxy_edges_2024-07-05.csv.gz
+  historical_sample_projects_2024-07-05.csv.gz
+  projects_analysis.csv.gz
+data_encoded/
+  metadata_proxy_edges.csv.gz.part*.b64
+  roles.csv.gz.part*.b64
+  journal_role_events.csv.gz.part*.b64
 results/
   decision_impact_results.csv
   tiebreak_sensitivity_results.csv
@@ -31,6 +40,8 @@ results/
 environment.yml
 SHA256SUMS.txt
 ```
+
+Three larger pseudonymised tables are stored as Base64 parts so the repository remains compatible with normal GitHub file-transfer limits. The reconstruction script restores the exact original `.csv.gz` bytes and verifies their SHA-256 hashes.
 
 ## Environment
 
@@ -40,6 +51,22 @@ Create the pinned Conda environment:
 conda env create -f environment.yml
 conda activate pypi-construct-audit
 ```
+
+## Prepare the larger data tables
+
+Run once after cloning:
+
+```bash
+python code/prepare_data.py
+```
+
+This reconstructs:
+
+- `data/metadata_proxy_edges.csv.gz`
+- `data/roles.csv.gz`
+- `data/journal_role_events.csv.gz`
+
+The script stops if any reconstructed file fails its expected SHA-256 checksum.
 
 ## Reproduce the main analyses
 
@@ -71,4 +98,4 @@ The null-model run is intentionally computationally heavier than the main decisi
 
 ## Integrity
 
-File-level SHA-256 hashes are recorded in `SHA256SUMS.txt`.
+`SHA256SUMS.txt` records the hashes of the analysis files. The three reconstructed larger tables are checked automatically by `code/prepare_data.py`.
