@@ -1,0 +1,5 @@
+data/metadata_proxy_edges.csv.gz
+data/roles.csv.gz
+data/journal_role_events.csv.gz
+__pycache__/
+*.pyc
